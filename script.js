@@ -38,63 +38,139 @@ const data = {
   ],
 }
 
-const $addIdea = document.getElementById('form');
-const $completed = document.getElementById('completed');
-const $list = document.getElementById('list');
+// insert html into idea element
+//retrieve ideas element
+// two declaration statements
+//let which creates variables
+//const which creates constants
+const $ideas = document.getElementById('ideas');
+const $form = document.getElementById('form');
+const $content = document.getElementById('content');
+const $username = document.getElementById('username');
+const $currentUser = document.getElementById('currentUser')
 
 
-//add html dinamcally to the browser
-function listData(){
-  const html = []
 
-  for(let i = 0; i < data.ideas.length; i++ ){
-    if ("currentUser" == data.ideas[i].username) {
-      html.push(`<li class="ideasBox">
-                  <div class="number" id="number">
-                      <button id="increase" class="bi bi-chevron-up increase"></button>
-                      <div class="value">${data.ideas[i].score}</div>
-                      <button id="decrease" class="bi bi-chevron-down decrease"></button>
+function createIdeas() {
+
+  // create an empty array to store the ideas
+  const html = [];
+    
+  
+  //loop over the ideas pushing html stings
+  // to empty array
+  //for: use when you need to know the index
+  //for...of: use when you dont need to know the index
+  //for this project the index will be needed 
+  //data.idea is a array of objects
+  //access an object using the index data.ideas
+  //accss the user of  the second object:
+  //data.ideas[1].username 
+  
+  
+  for(let i = 0; i < data.ideas.length; i++){
+     html.push(`
+     <div class="card m-3">
+              <div class="card-header">
+                  ${data.ideas[i].username}
+                  
+              </div>
+              <div class="card-body">
+                  <p class="card-text">${data.ideas[i].content}</p>
                   </div>
-                  <div>
-                    <div class="current-user">
-                      <h2>${data.ideas[i].username}</h2>
-                      <p class="you"> You </p>
-                      <button id="delete" class="bi bi-trash-fill" data-delete="${i}"> Delete </button>
-                      <button id="edit" class="bi bi-pen-fill delete"> Edit </button>
-                    </div>
-                      <p> ${data.ideas[i].content} </p>
-                  </div>
-              </li>  <hr>`)
-    } else {
-      html.push(`<li class="ideasBox">
-                    <div class="number" id="number">
-                        <button id="increase" class="bi bi-chevron-up increase"></button>
-                        <div class="value">${data.ideas[i].score}</div>
-                        <button id="decrease" class="bi bi-chevron-down decrease"></button>
-                    </div>
-                    <div>
-                        <h2>${data.ideas[i].username}</h2>
-                        <p> ${data.ideas[i].content} </p>
-                    </div>
-                </li>  <hr>`)
-            }
-    }
-    $list.innerHTML = html.join('')
-}
-
-listData()
-
-//add new Ideas to the idea form
-const $form = document.getElementById('form')
-const $content = document.getElementById('content')
-
-$form.addEventListener('submit', function (e){
-  e.preventDefault()
-    data.ideas.push({username: 'currentUser',
-                    content: $content.value,
-                    score: '0'})
-
-    $form.reset()
-
-    listData()
-})
+              <div class="card-footer">
+              <button class="btn btn-secondary upvote" data-index="${i}">+</button>
+                  <small>${data.ideas[i].score}</small>
+              <button class="btn btn-secondary downvote"data-index="${i}">-</button>
+              <button class="btn btn-primary">Edit</button>
+              <button class="btn btn-danger delete" data-index="${i}">Delete</button>
+              </div>
+              
+          
+          </div>
+     `)
+  }
+    
+  
+  //use innerHTML to insert html on the page
+  //use HTML array and convert to using join
+  $ideas.innerHTML = html.join('');
+  }
+  
+  //create idea by calling createIdeas function
+  createIdeas();
+  
+  
+  // add event listener to ideas element
+  // to implement event delegation
+  $ideas.addEventListener('click', function(e){
+  
+      //e.target is the element that was clicked
+  
+      if(e.target.classList.contains('upvote')){
+          //get the idea's index
+          //to access the a customed attribute
+          //dataset.index
+          const index = e.target.dataset.index;
+          
+          //get the idea of  upvote button
+          const idea = data.ideas[index];
+  
+  
+  
+          //increase the score of idea the idea 
+          //score++
+          idea.score++;
+  
+          //recreate/update the idea
+          createIdeas();
+  
+      }
+  
+      if(e.target.classList.contains('downvote')){
+          //get the idea's index
+          //to access the a customed attribute
+          //dataset.index
+          const index = e.target.dataset.index;
+          
+          //get the idea of  upvote button
+          const idea = data.ideas[index];
+  
+  
+  
+          //increase the score of idea the idea 
+          //score++
+          idea.score--;
+  
+          //recreate/update the idea
+          createIdeas();
+  
+      }
+  
+      if(e.target.classList.contains('delete')){
+          //get the idea's index
+          //to access the a customed attribute
+          //dataset.index
+          const index = e.target.dataset.index;
+          
+          //remove object from array
+          // pop - remove the last item from the array
+          //shift - remove the first item from the array
+          //splice - remove items from anyware
+          //splice three arguments:
+          //1. index (starting point)
+          //2. number of items to delete
+          //3. items to be added
+          //adding a new items at beginning
+          // data.ideas.splice(0, 0, {...} );
+          // remove an idea
+          data.ideas.splice(index, 1);
+  
+          //update ideas
+          createIdeas();
+      }
+   
+  
+  });
+  
+  
